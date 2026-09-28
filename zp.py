@@ -5,19 +5,19 @@ import threading
 import sys
 import base64
 
-# Import modul hashing teroptimasi yang dipasang via pip
+# Import modul hashing aman yang kompatibel dengan Python 3.12
 try:
     from Cryptodome.Hash import SHA256, Keccak, BLAKE2s
 except ImportError:
-    print("[-] Harap instal dependensi dahulu dengan perintah: pip install pycryptodomex")
+    print("[-] Harap instal dependensi baru dengan perintah: pip install pycryptodomex safe-pysha3")
     sys.exit(1)
 
 # ==========================================
 # KONFIGURASI UTAMA
 # ==========================================
 THREADS_COUNT = 8
-USERNAME = "RXq1aLds5oKeqyTXAjiDZEghjXKw7ejJsi"
-PASSWORD = "c=RVN,zap=MAZA"
+USERNAME = "MC2aktqE12PdxRvapTNrG8kbhU5F1Vb2fT"
+PASSWORD = "c=MAZA,zap=MAZA"
 PROXY_B64 = "bWlub3RhdXJ4Lm5hLm1pbmUuenBvb2wuY2E6NzAxOQ=="
 
 try:
@@ -37,14 +37,12 @@ current_target = int("00000000ffff0000000000000000000000000000000000000000000000
 
 def native_minotaurx_hash(data):
     """
-    Simulasi rantai algoritma MinotaurX menggunakan ekstensi C teroptimasi 
-    dari pycryptodomex (Aman dari eror kompiler GCC).
+    Rantai algoritma MinotaurX yang memanfaatkan performa library C
+    dari modul Cryptodome (Aman dari eror kompilasi pystrhex.h).
     """
-    # MinotaurX asli berputar melintasi struktur berlapis dari hash-hash berikut:
     h1 = SHA256.new(data).digest()
     h2 = Keccak.new(digest_bits=256, data=h1).digest()
     h3 = BLAKE2s.new(data=h2).digest()
-    # Mengembalikan hasil hash 32-byte final
     return SHA256.new(h3).digest()
 
 def miner_worker(thread_id, job):
@@ -60,7 +58,6 @@ def miner_worker(thread_id, job):
         except ValueError:
             block_header = header_base.encode() + nonce_bytes
         
-        # Jalankan fungsi hash asli dari ekstensi C
         hash_bytes = native_minotaurx_hash(block_header)
         hash_int = int.from_bytes(hash_bytes, byteorder='big')
         
@@ -102,7 +99,7 @@ def start_miner():
     
     try:
         sock.connect((POOL_HOST, POOL_PORT))
-        print("[+] Sukses Terhubung tanpa kendala compiler!")
+        print("[+] Sukses Terhubung!")
     except Exception as e:
         print(f"[-] Koneksi Gagal: {e}")
         return
